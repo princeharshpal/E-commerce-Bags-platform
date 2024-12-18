@@ -1,15 +1,32 @@
 <% layout("./layouts/boilerplate") -%>
 
-<body>
-    <h1>All Products</h1>
-    <form action="/products/new">
-        <button>Create new product</button>
-    </form>
-    <% products.forEach((product)=>{ %>
-        <li>
-            <a href="/products/<%= product._id %>">
-                <%= product.name %> <br>
-            </a>
-        </li>
-        <% }); %>
-</body>
+  <body>
+
+    <div class="flex">
+
+      <div class="h-screen w-1/4 bg-gray-100">
+        filters
+      </div>
+
+      <div class="container flex flex-wrap p-5">
+
+        <% products.forEach((product)=> { %>
+
+          <div class="w-1/5 h-80 bg-red-100 mb-8 border-2 border-gray-800">
+            
+            <img src="<%= product.image %>" class="w-full h-4/5 bg-center bg-cover" alt="product">
+
+            <div class="px-4 py-2">
+              <h5 class="font-semibold">
+                <%= product.name %>
+              </h5>
+              <p>
+                &#8377;<%= product.price.toLocaleString("en-IN") %>
+              </p>
+            </div>
+          </div>
+          <% }); %>
+      </div>
+    </div>
+
+  </body>
