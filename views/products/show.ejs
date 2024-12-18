@@ -1,0 +1,29 @@
+<% layout("./layouts/boilerplate") -%>
+
+<body>
+    <h3>
+        <%= product.name %>
+    </h3>
+    <ul>
+        <li>
+            <%= product.image %>
+        </li>
+        <li>
+            <%= product.brand %>
+        </li>
+        <li>
+            <%= product.description %>
+        </li>
+        <li>&#8377;<%= product.price.toLocaleString("en-IN") %>
+        </li>
+        <li>
+            <%= product.rating %>
+        </li>
+    </ul>
+    <form action="/products/<%= product._id %>/edit">
+        <button>Edit details</button>
+    </form>
+    <form action="/products/<%= product._id %>/delete?_method=delete" method="post">
+        <button>Delete product</button>
+    </form>
+</body>

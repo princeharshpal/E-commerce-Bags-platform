@@ -1,0 +1,30 @@
+<% layout("./layouts/boilerplate") -%>
+
+    <body>
+        <h3>Enter the details of product</h3>
+
+        <form action="/products/<%= product._id %>?_method=put" method="post">
+            <label for="name">Name of &nbsp; Product</label>
+            <input type="text" placeholder="Name" id="name" name="name" required value="<%= product.name %>"> <br>
+
+            <label for="brand">Brand</label>
+            <input type="text" placeholder="brand" id="brand" name="brand" required value="<%= product.brand %>"> <br>
+
+            <label for="image">Image</label>
+            <input type="text" placeholder="Image" id="image" name="image" required value="<%= product.image %>"> <br>
+
+            <label for="description">Description</label>
+            <textarea type="text" placeholder="description" rows="5" cols="40" id="description" name="description"
+                required><%= product.description %></textarea> <br>
+
+            <label for="price">Price </label>
+            <input type="number" placeholder="price" id="price" name="price" required required
+                value="<%= product.price %>"> <br>
+
+            <label for="rating">Rating</label>
+            <input type="text" placeholder="rating" id="rating" name="rating" required required
+                value="<%= product.rating %>"> <br>
+
+            <button>Edit Product</button>
+        </form>
+    </body>
