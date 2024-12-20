@@ -4,25 +4,62 @@
 
     <div class="flex">
 
-      <div class="h-screen w-1/4 bg-gray-100">
-        filters
+      <div class="h-screen w-1/5 p-5 px-8 flex flex-col justify-between sidebar">
+
+        <div class="">
+          <span class="text-lg">Sort By :</span>
+          <select name="sort"
+            class="px-1.5 py-1 rounded-md border-0 outline-none border-gray-200 border-2 w-fit font-semibold">
+            <option value="popular">Popular</option>
+            <option value="low-high">Low to High</option>
+            <option value="high-low">High to Low</option>
+            <option value="discount">Discount</option>
+          </select>
+        </div>
+
+        <div class="">
+          <p>New Collection</p>
+          <p>All Products</p>
+          <p>Discounted Products</p>
+        </div>
+
+        <div class="">
+          <span>Filter By :</span>
+          <p>Availability</p>
+          <p>Discount</p>
+        </div>
       </div>
 
-      <div class="container flex flex-wrap p-5">
+      <div class="container flex flex-wrap p-5 justify-evenly gap-5">
 
         <% products.forEach((product)=> { %>
 
-          <div class="w-1/5 h-80 bg-red-100 mb-8 border-2 border-gray-800">
-            
-            <img src="<%= product.image %>" class="w-full h-4/5 bg-center bg-cover" alt="product">
+          <div class="w-1/6 rounded-lg mb-3 overflow-hidden">
 
-            <div class="px-4 py-2">
-              <h5 class="font-semibold">
+            <div class="w-full h-3/4">
+              <img class="w-full h-full object-center object-cover" src="<%= product.image %>" alt="image">
+            </div>
+
+            <div class="p-2 w-full h-full">
+
+              <p class="font-semibold mb-3">
                 <%= product.name %>
-              </h5>
-              <p>
-                &#8377;<%= product.price.toLocaleString("en-IN") %>
               </p>
+
+              <div class="flex justify-between items-center">
+
+                <div class="flex gap-2">
+                  <p>
+                    &#8377;<%= product.price.toLocaleString("en-IN") %>
+                  </p>
+                  <p>
+                    Rating
+                  </p>
+                </div>
+
+                <span class="w-7 h-7 flex justify-center items-center rounded-full font-semibold">
+                  <i class="ri-add-line"></i></span>
+              </div>
             </div>
           </div>
           <% }); %>
