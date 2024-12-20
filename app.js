@@ -29,13 +29,12 @@ app.get("/products/new", (req, res) => {
 
 // create route
 app.post("/products/new", async (req, res) => {
-  const { name, description, image, price, rating, brand } = req.body;
+  const { name, description, image, price, brand } = req.body;
 
   await ProductModel.create({
     name,
     brand,
     description,
-    rating,
     image,
     price,
   });

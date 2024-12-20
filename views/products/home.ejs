@@ -2,9 +2,9 @@
 
   <body>
 
-    <div class="flex">
+    <div class="flex h-screen">
 
-      <div class="h-screen w-1/5 p-5 px-8 flex flex-col justify-between sidebar">
+      <div class="h-[calc(100%-5rem)] w-1/5 p-5 px-8 flex flex-col justify-between sticky top-[5rem]">
 
         <div class="">
           <span class="text-lg">Sort By :</span>
@@ -17,16 +17,16 @@
           </select>
         </div>
 
-        <div class="">
-          <p>New Collection</p>
-          <p>All Products</p>
-          <p>Discounted Products</p>
+        <div class="flex flex-col">
+          <a href="/products/new">New Collection</a>
+          <a href="/">All Products</a>
+          <a href="#">Discounted Products</a>
         </div>
 
         <div class="">
           <span>Filter By :</span>
-          <p>Availability</p>
-          <p>Discount</p>
+          <p class="cursor-pointer">Availability</p>
+          <p class="cursor-pointer">Discount</p>
         </div>
       </div>
 
@@ -57,7 +57,7 @@
                   </p>
                 </div>
 
-                <span class="w-7 h-7 flex justify-center items-center rounded-full font-semibold">
+                <span class="w-7 h-7 flex justify-center items-center rounded-full font-semibold cursor-pointer hover:bg-gray-200">
                   <i class="ri-add-line"></i></span>
               </div>
             </div>
