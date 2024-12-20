@@ -36,9 +36,11 @@
 
           <div class="w-1/6 rounded-lg mb-3 overflow-hidden">
 
+           <a class="hover:opacity-[0.7]" href="/products/<%= product._id %>">
             <div class="w-full h-3/4">
               <img class="w-full h-full object-center object-cover" src="<%= product.image %>" alt="image">
             </div>
+           </a>
 
             <div class="p-2 w-full h-full">
 
@@ -62,6 +64,7 @@
               </div>
             </div>
           </div>
+
           <% }); %>
       </div>
     </div>

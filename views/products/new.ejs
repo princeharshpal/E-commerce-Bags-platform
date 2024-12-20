@@ -47,7 +47,7 @@
                             <input type="text" id="image" name="image" placeholder="Enter image URL or file path"
                                 class="border bg-gray-100 rounded-md py-2 px-4 outline-none">
                         </div>
-                    
+
                         <!-- Product Name and Brand -->
                         <div class="grid grid-cols-2 gap-6">
                             <div class="flex flex-col">
@@ -61,14 +61,15 @@
                                     class="border bg-gray-100 rounded-md py-2 px-4 outline-none">
                             </div>
                         </div>
-                    
+
                         <!-- Product Description -->
                         <div class="flex flex-col">
                             <label for="description" class="text-lg font-medium mb-2">Description</label>
-                            <textarea id="description" name="description" rows="4" placeholder="Enter product description"
+                            <textarea id="description" name="description" rows="4"
+                                placeholder="Enter product description"
                                 class="border bg-gray-100 rounded-md py-2 px-4 outline-none"></textarea>
                         </div>
-                    
+
                         <!-- Product Price and Discount -->
                         <div class="grid grid-cols-2 gap-6">
                             <div class="flex flex-col">
@@ -82,32 +83,38 @@
                                     class="border bg-gray-100 rounded-md py-2 px-4 outline-none">
                             </div>
                         </div>
-                    
+
                         <!-- Panel Details: Background Color and Text Color -->
                         <div class="grid grid-cols-3 gap-6">
-                            <!-- Panel Color -->
-                            <div class="flex flex-col">
-                                <label for="panel-color" class="text-lg font-medium mb-2">Panel Color</label>
-                                <input type="text" id="panel-color" name="panel-color" placeholder="Enter panel color"
-                                    class="border bg-gray-100 rounded-md py-2 px-4 outline-none">
-                            </div>
-                        
                             <!-- Background Color -->
                             <div class="flex flex-col">
                                 <label for="bg-color" class="text-lg font-medium mb-2">Background Color</label>
-                                <input type="text" id="bg-color" name="bg-color" placeholder="Enter background color"
-                                    class="border bg-gray-100 rounded-md py-2 px-4 outline-none">
+                                <input type="color" id="bg-color" name="bg-color"
+                                    class="rounded-md h-10 w-full cursor-pointer outline-none" value="#6FA1FF">
+                            </div>
+
+                            <!-- Panel Color -->
+                            <div class="flex flex-col">
+                                <label for="panel-color" class="text-lg font-medium mb-2">Panel Color</label>
+                                <input type="color" id="panel-color" name="panel-color"
+                                    class="rounded-md h-10 w-full cursor-pointer outline-none" value="#FF6F61">
                             </div>
                         
                             <!-- Text Color -->
                             <div class="flex flex-col">
                                 <label for="text-color" class="text-lg font-medium mb-2">Text Color</label>
-                                <input type="text" id="text-color" name="text-color" placeholder="Enter text color"
-                                    class="border bg-gray-100 rounded-md py-2 px-4 outline-none">
+                                <input type="color" id="text-color" name="text-color"
+                                    class="rounded-md h-10 w-full cursor-pointer outline-none" value="#28A745">
                             </div>
                         </div>
                         
-                    
+
+
+
+
+
+
+
                         <!-- Submit Button -->
                         <div class="mt-6">
                             <button type="submit"
@@ -116,7 +123,7 @@
                             </button>
                         </div>
                     </form>
-                    
+
                 </div>
             </div>
 

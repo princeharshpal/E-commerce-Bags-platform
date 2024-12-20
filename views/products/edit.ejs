@@ -1,30 +1,123 @@
 <% layout("./layouts/boilerplate") -%>
 
     <body>
-        <h3>Enter the details of product</h3>
 
-        <form action="/products/<%= product._id %>?_method=put" method="post">
-            <label for="name">Name of &nbsp; Product</label>
-            <input type="text" placeholder="Name" id="name" name="name" required value="<%= product.name %>"> <br>
+        <div class="flex h-screen">
 
-            <label for="brand">Brand</label>
-            <input type="text" placeholder="brand" id="brand" name="brand" required value="<%= product.brand %>"> <br>
+            <div class="h-[calc(100%-5rem)] w-1/5 p-5 px-8 flex flex-col justify-between sticky top-[5rem]">
 
-            <label for="image">Image</label>
-            <input type="text" placeholder="Image" id="image" name="image" required value="<%= product.image %>"> <br>
+                <div class="">
+                    <span class="text-lg">Sort By :</span>
+                    <select name="sort"
+                        class="px-1.5 py-1 rounded-md border-0 outline-none border-gray-200 border-2 w-fit font-semibold">
+                        <option value="popular">Popular</option>
+                        <option value="low-high">Low to High</option>
+                        <option value="high-low">High to Low</option>
+                        <option value="discount">Discount</option>
+                    </select>
+                </div>
 
-            <label for="description">Description</label>
-            <textarea type="text" placeholder="description" rows="5" cols="40" id="description" name="description"
-                required><%= product.description %></textarea> <br>
+                <div class="flex flex-col">
+                    <a href="/products/new">New Collection</a>
+                    <a href="/">All Products</a>
+                    <a href="#">Discounted Products</a>
+                </div>
 
-            <label for="price">Price </label>
-            <input type="number" placeholder="price" id="price" name="price" required required
-                value="<%= product.price %>"> <br>
+                <div class="">
+                    <span>Filter By :</span>
+                    <p>Availability</p>
+                    <p>Discount</p>
+                </div>
+            </div>
 
-            <label for="rating">Rating</label>
-            <input type="text" placeholder="rating" id="rating" name="rating" required required
-                value="<%= product.rating %>"> <br>
+            <div class="w-full p-5 px-8">
 
-            <button>Edit Product</button>
-        </form>
+                <h1 class="text-4xl font-semibold mb-8">Create New Product</h1>
+
+                <hr class="mb-5">
+
+                <div class="px-5">
+
+                    <h3 class="text-2xl font-semibold mb-5">Product Details</h3>
+
+                    <form action="/products/new" method="post" class="space-y-6">
+                        <!-- Product Image -->
+                        <div class="flex flex-col">
+                            <label for="image" class="text-lg font-medium mb-2">Product Image</label>
+                            <input type="text" id="image" name="image" placeholder="Enter image URL or file path"
+                                class="border bg-gray-100 rounded-md py-2 px-4 outline-none" value="<%= product.image %>">
+                        </div>
+
+                        <!-- Product Name and Brand -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="flex flex-col">
+                                <label for="name" class="text-lg font-medium mb-2">Product Name</label>
+                                <input type="text" id="name" name="name" placeholder="Enter product name"
+                                    class="border bg-gray-100 rounded-md py-2 px-4 outline-none" value="<%= product.name %>">
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="brand" class="text-lg font-medium mb-2">Brand</label>
+                                <input type="text" id="brand" name="brand" placeholder="Enter product brand"
+                                    class="border bg-gray-100 rounded-md py-2 px-4 outline-none" value="<%= product.brand %>">
+                            </div>
+                        </div>
+
+                        <!-- Product Description -->
+                        <div class="flex flex-col">
+                            <label for="description" class="text-lg font-medium mb-2">Description</label>
+                            <textarea id="description" name="description" rows="4"
+                                placeholder="Enter product description"
+                                class="border bg-gray-100 rounded-md py-2 px-4 outline-none"><%= product.description %></textarea>
+                        </div>
+
+                        <!-- Product Price and Discount -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="flex flex-col">
+                                <label for="price" class="text-lg font-medium mb-2">Price</label>
+                                <input type="number" id="price" name="price" placeholder="Enter product price"
+                                    class="border bg-gray-100 rounded-md py-2 px-4 outline-none" value="<%= product.price %>">
+                            </div>
+                            <div class="flex flex-col">
+                                <label for="discount" class="text-lg font-medium mb-2">Discount Price</label>
+                                <input type="number" id="discount" name="discount" placeholder="Enter discount price"
+                                    class="border bg-gray-100 rounded-md py-2 px-4 outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Panel Details: Background Color and Text Color -->
+                        <div class="grid grid-cols-3 gap-6">
+                            <!-- Background Color -->
+                            <div class="flex flex-col">
+                                <label for="bg-color" class="text-lg font-medium mb-2">Background Color</label>
+                                <input type="color" id="bg-color" name="bg-color"
+                                    class="rounded-md h-10 w-full cursor-pointer outline-none" value="#6FA1FF">
+                            </div>
+
+                            <!-- Panel Color -->
+                            <div class="flex flex-col">
+                                <label for="panel-color" class="text-lg font-medium mb-2">Panel Color</label>
+                                <input type="color" id="panel-color" name="panel-color"
+                                    class="rounded-md h-10 w-full cursor-pointer outline-none" value="#FF6F61">
+                            </div>
+                        
+                            <!-- Text Color -->
+                            <div class="flex flex-col">
+                                <label for="text-color" class="text-lg font-medium mb-2">Text Color</label>
+                                <input type="color" id="text-color" name="text-color"
+                                    class="rounded-md h-10 w-full cursor-pointer outline-none" value="#28A745">
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="mt-6">
+                            <button type="submit"
+                                class="bg-blue-500 text-white font-semibold py-2 px-6 mb-10 rounded-md hover:bg-blue-600 outline-none">
+                                Edit Product
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
     </body>
