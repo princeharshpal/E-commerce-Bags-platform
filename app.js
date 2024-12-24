@@ -1,13 +1,15 @@
 const express = require("express");
 const app = express();
 const connectToDB = require("./config/db");
-const ProductModel = require("./models/product");
+const ProductModel = require("./models/product.model");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/ExpressError");
 const { body, validationResult } = require("express-validator");
+const reviewModel = require("./models/review.model");
+const { log } = require("console");
 
 connectToDB();
 
@@ -120,8 +122,7 @@ app.put(
 app.delete(
   "/products/:id/delete",
   wrapAsync(async (req, res, next) => {
-    const deletedProduct = await ProductModel.findByIdAndDelete(req.params.id);
-    console.log(deletedProduct);
+    await ProductModel.findByIdAndDelete(req.params.id);
     res.redirect("/");
   })
 );
@@ -131,8 +132,62 @@ app.get(
   "/products/:id",
   wrapAsync(async (req, res, next) => {
     const { id } = req.params;
-    const product = await ProductModel.findById(id);
+    const product = await ProductModel.findById(id).populate("reviews");
+
+    if (!product) {
+      throw new ExpressError(404, "Product not found.");
+    }
+
     res.render("products/show", { product });
+  })
+);
+
+// review route
+app.post(
+  "/products/:id/review",
+  [
+    body("rating")
+      .isEmpty()
+      .withMessage("Please give some rating from 1-5 to save the review")
+      .isNumeric()
+      .withMessage("rating should be a number"),
+    body("comments")
+      .isEmpty()
+      .withMessage("please give some comment to save the review"),
+  ],
+  wrapAsync(async (req, res) => {
+    const { rating, comment } = req.body;
+    const product = await ProductModel.findById(req.params.id);
+
+    if (!product) {
+      throw new ExpressError(404, "Product not found.");
+    }
+
+    let newReview = await reviewModel.create({
+      rating,
+      comment,
+      product: req.params.id,
+    });
+
+    product.reviews.push(newReview);
+
+    await product.save();
+
+    res.redirect(`/products/${req.params.id}`);
+  })
+);
+
+app.delete(
+  "/products/:id/reviews/:reviewId",
+  wrapAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+
+    await ProductModel.findByIdAndUpdate(id, {
+      $pull: { reviews: reviewId },
+    });
+    await reviewModel.findByIdAndDelete(reviewId);
+
+    res.redirect(`/products/${id}`);
   })
 );
 

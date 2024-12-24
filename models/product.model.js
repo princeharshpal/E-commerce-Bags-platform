@@ -33,6 +33,12 @@ const productSchema = new mongoose.Schema({
     min: 1,
     max: 5,
   },
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "reviewModel",
+    },
+  ],
 });
 
 module.exports = mongoose.model("ProductModel", productSchema);

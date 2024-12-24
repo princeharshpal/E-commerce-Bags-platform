@@ -94,8 +94,97 @@
 
                 <hr>
 
-                <div class="p-10">
-                    <p class="text-2xl font-semibold">Reviews</p>
+                <div class="py-10">
+
+                    <p class="text-3xl font-semibold mb-10">Reviews</p>
+
+                    <form action="/products/<%= product._id %>/review" method="post">
+
+                        <fieldset class="starability-heart">
+                            <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked
+                                aria-label="No rating." />
+                            <input type="radio" id="second-rate1" name="rating" value="1" />
+                            <label for="second-rate1" title="Terrible">1 star</label>
+                            <input type="radio" id="second-rate2" name="rating" value="2" />
+                            <label for="second-rate2" title="Not good">2 stars</label>
+                            <input type="radio" id="second-rate3" name="rating" value="3" />
+                            <label for="second-rate3" title="Average">3 stars</label>
+                            <input type="radio" id="second-rate4" name="rating" value="4" />
+                            <label for="second-rate4" title="Very good">4 stars</label>
+                            <input type="radio" id="second-rate5" name="rating" value="5" />
+                            <label for="second-rate5" title="Amazing">5 stars</label>
+                        </fieldset>
+
+                        <label class="text-lg mb-1" for="comment">Add Some Reviews.</label> <br>
+                        <textarea class="border-2 w-3/4 rounded-md p-1 px-2 border-2 focus:outline-blue-500" rows="3"
+                            name="comment" id="comment" placeholder="Write your review"></textarea>
+                        <br>
+                        <button class="my-1 px-4 py-2 bg-blue-500 rounded-md text-white font-semibold">Add
+                            review</button>
+                    </form>
+
+                    <hr class="my-8 w-3/4">
+
+                    <div class="w-3/4 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-hidden">
+
+                        <% if (product.reviews && product.reviews.length> 0) { %>
+
+                            <% product.reviews.forEach((review)=> { %>
+
+                                <div
+                                    class="border-2 p-4 border-yellow-500 rounded-md overflow-hidden shadow-md flex flex-col justify-between">
+
+                                    <div>
+                                        <div class="flex gap-3 items-center mb-3">
+
+                                            <div class="w-14 h-14 border-2 rounded-full overflow-hidden">
+
+                                                <img class="object-center object-cover w-full h-full"
+                                                    src="https://media.istockphoto.com/id/1300845620/vector/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.jpg?s=612x612&w=0&k=20&c=yBeyba0hUkh14_jgv1OKqIH0CCSWU_4ckRkAoy2p73o="
+                                                    alt="user profile photo">
+                                            </div>
+
+                                            <div>
+                                                <h1 class="text-lg font-semibold text-gray-800">User Name</h1>
+                                                <p class="text-yellow-500 font-medium">Rating: <%= review.rating %> / 5
+                                                </p>
+                                            </div>
+
+                                        </div>
+
+                                        <p class="text-gray-700 break-words mb-4">
+                                            <%= review.comment %>
+                                        </p>
+                                    </div>
+
+                                    <div class="flex justify-between items-center mt-3">
+
+                                        <form action="/products/<%= product._id %>/reviews/<%= review._id %>?_method=delete" method="post">
+
+                                            <button class="text-red-600">
+                                                <i class="ri-delete-bin-6-line"></i>
+                                            </button>
+                                        </form>
+
+                                        <p class="text-sm text-gray-500">
+                                            <%= new Date(review.createdAt).toLocaleDateString('en-GB') %>
+                                        </p>
+
+                                    </div>
+                                </div>
+
+                                <% }); %>
+
+                                    <% } else { %>
+
+                                        <p class="text-lg text-gray-400 col-span-2">No reviews yet. Be the first to
+                                            leave one!</p>
+
+                                        <% } %>
+
+                    </div>
+
+
                 </div>
 
             </div>
