@@ -1,15 +1,12 @@
 const express = require("express");
 const app = express();
 const connectToDB = require("./config/db");
-const ProductModel = require("./models/product.model");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/ExpressError");
-const { body, validationResult } = require("express-validator");
-const reviewModel = require("./models/review.model");
-const { log } = require("console");
+const productsRoutes = require("./routes/products.routes");
+const reviewsRoutes = require("./routes/reviews.routes");
 
 connectToDB();
 
@@ -21,175 +18,8 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 
-// index route
-app.get("/", async (req, res) => {
-  const products = await ProductModel.find({});
-  res.render("products/home", { products });
-});
-
-// new route
-app.get("/products/new", (req, res) => {
-  res.render("products/new");
-});
-
-// create route
-app.post(
-  "/products/new",
-  [
-    body("name")
-      .notEmpty()
-      .withMessage("Product name is required")
-      .isString()
-      .withMessage("Product name must be a string"),
-    body("brand")
-      .notEmpty()
-      .withMessage("Product brand is required")
-      .isString()
-      .withMessage("Product brand must be a string"),
-    body("description")
-      .notEmpty()
-      .withMessage("Product description is required")
-      .isString()
-      .withMessage("Product description must be a string"),
-    body("price")
-      .notEmpty()
-      .withMessage("Product price is required")
-      .isNumeric()
-      .withMessage("Product price must be a number")
-      .custom((value) => {
-        if (value < 1) {
-          throw new Error("Product price must be at least 1");
-        }
-        return true;
-      }),
-  ],
-  wrapAsync(async (req, res, next) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      let errMsg = errors
-        .array()
-        .map((err) => err.msg)
-        .join(`, \n`);
-      throw new ExpressError(errors.statusCode, errMsg);
-    }
-
-    const { name, description, image, price, brand } = req.body;
-
-    await ProductModel.create({
-      name,
-      brand,
-      description,
-      image,
-      price,
-    });
-    res.redirect("/");
-  })
-);
-
-// edit route
-app.get(
-  "/products/:id/edit",
-  wrapAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const product = await ProductModel.findById(id);
-    res.render("products/edit", { product });
-  })
-);
-
-// update route
-app.put(
-  "/products/:id",
-  wrapAsync(async (req, res, next) => {
-    if (!req.body) {
-      throw new ExpressError(400, "Send valid data for Product");
-    }
-    const { id } = req.params;
-    const { name, description, image, price, rating, brand } = req.body;
-    await ProductModel.findByIdAndUpdate(id, {
-      name,
-      description,
-      price,
-      image,
-      rating,
-      brand,
-    });
-    res.redirect(`/products/${id}`);
-  })
-);
-
-// delete route
-app.delete(
-  "/products/:id/delete",
-  wrapAsync(async (req, res, next) => {
-    await ProductModel.findByIdAndDelete(req.params.id);
-    res.redirect("/");
-  })
-);
-
-// show route
-app.get(
-  "/products/:id",
-  wrapAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const product = await ProductModel.findById(id).populate("reviews");
-
-    if (!product) {
-      throw new ExpressError(404, "Product not found.");
-    }
-
-    res.render("products/show", { product });
-  })
-);
-
-// review route
-app.post(
-  "/products/:id/review",
-  [
-    body("rating")
-      .isEmpty()
-      .withMessage("Please give some rating from 1-5 to save the review")
-      .isNumeric()
-      .withMessage("rating should be a number"),
-    body("comments")
-      .isEmpty()
-      .withMessage("please give some comment to save the review"),
-  ],
-  wrapAsync(async (req, res) => {
-    const { rating, comment } = req.body;
-    const product = await ProductModel.findById(req.params.id);
-
-    if (!product) {
-      throw new ExpressError(404, "Product not found.");
-    }
-
-    let newReview = await reviewModel.create({
-      rating,
-      comment,
-      product: req.params.id,
-    });
-
-    product.reviews.push(newReview);
-
-    await product.save();
-
-    res.redirect(`/products/${req.params.id}`);
-  })
-);
-
-app.delete(
-  "/products/:id/reviews/:reviewId",
-  wrapAsync(async (req, res) => {
-    const { id, reviewId } = req.params;
-
-    await ProductModel.findByIdAndUpdate(id, {
-      $pull: { reviews: reviewId },
-    });
-    await reviewModel.findByIdAndDelete(reviewId);
-
-    res.redirect(`/products/${id}`);
-  })
-);
+app.use("/products", productsRoutes);
+app.use("/products", reviewsRoutes);
 
 app.all("*", (req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));
