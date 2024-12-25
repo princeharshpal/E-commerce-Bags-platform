@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const connectToDB = require("./config/db");
@@ -7,6 +8,9 @@ const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
 const productsRoutes = require("./routes/products.routes");
 const reviewsRoutes = require("./routes/reviews.routes");
+const flash = require("connect-flash");
+const cookieParser = require("cookie-parser");
+const usersRoutes = require("./routes/users.routes");
 
 connectToDB();
 
@@ -17,7 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
+app.use(flash());
+app.use(cookieParser());
 
+app.use("/users", usersRoutes);
 app.use("/products", productsRoutes);
 app.use("/products", reviewsRoutes);
 
