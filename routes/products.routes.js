@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const productModel = require("../models/product.model");
-const reviewModel =  require("../models/review.model")
+const reviewModel = require("../models/review.model");
 const ExpressError = require("../utils/ExpressError");
 const wrapAsync = require("../utils/wrapAsync");
 const { body, validationResult } = require("express-validator");
@@ -71,6 +71,7 @@ router.post(
       image,
       price,
     });
+    req.flash("success", "New Product Created");
     res.redirect("/products");
   })
 );
@@ -81,6 +82,12 @@ router.get(
   wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const product = await productModel.findById(id);
+
+    if (!product) {
+      req.flash("error", "Product you requested for doesn't exist!");
+      res.redirect("/products");
+    }
+
     res.render("products/edit", { product });
   })
 );
@@ -102,6 +109,7 @@ router.put(
       rating,
       brand,
     });
+    req.flash("success", "Product details updated successfully");
     res.redirect(`/products/${id}`);
   })
 );
@@ -115,6 +123,7 @@ router.delete(
     await reviewModel.deleteMany({ _id: Product.reviews });
     await productModel.findByIdAndDelete(req.params.id);
 
+    req.flash("success", "Product deleted successfully");
     res.redirect("/products");
   })
 );
@@ -127,7 +136,8 @@ router.get(
     const product = await productModel.findById(id).populate("reviews");
 
     if (!product) {
-      throw new ExpressError(404, "Product not found.");
+      req.flash("error", "Product you requested for doesn't exist!");
+      res.redirect("/products");
     }
 
     res.render("products/show", { product });

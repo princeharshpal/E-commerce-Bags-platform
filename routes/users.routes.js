@@ -4,6 +4,8 @@ const userModel = require("../models/user.model");
 const { body, validationResult } = require("express-validator");
 const ExpressError = require("../utils/ExpressError");
 const wrapAsync = require("../utils/wrapAsync");
+const jwt = require("jsonwebtoken");
+const { authenticate } = require("../middlewares/authMiddleware");
 
 router.get("/register", (req, res) => {
   res.render("users/register");
@@ -18,46 +20,50 @@ router.post(
       .withMessage("Password should be at least 6 characters long"),
   ],
   wrapAsync(async (req, res) => {
-    const { email, password } = req.body;
+    try {
+      const { email, password } = req.body;
 
-    if (!email || !password) {
-      throw new ExpressError("All fields are required");
+      const errors = validationResult(req);
+
+      if (!errors.isEmpty()) {
+        const errorMsg = errors
+          .array()
+          .map((err) => err.msg)
+          .join(", ");
+        throw new ExpressError(400, errorMsg);
+      }
+
+      const existingUser = await userModel.findOne({ email });
+
+      if (existingUser) {
+        throw new ExpressError(400, "Email is already registered");
+      }
+
+      const hashedPassword = await userModel.hashPassword(password);
+
+      const newUser = new userModel({
+        email,
+        password: hashedPassword,
+      });
+
+      await newUser.save();
+
+      const token = jwt.sign({ _id: newUser._id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+
+      req.flash("success", "Welcome to Bags.");
+      res.redirect(`/products`);
+    } catch (e) {
+      req.flash("error", e.message);
+      res.redirect("/users/register", { error: e.message });
     }
-
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      let errMsg = errors
-        .array()
-        .map((err) => err.msg)
-        .join(`, \n`);
-      throw new ExpressError(errors.statusCode, errMsg);
-    }
-
-    const existingUser = await userModel.findOne({ email });
-
-    if (existingUser) {
-      throw new ExpressError(400, "Email is already registered");
-    }
-
-    const hashedPassword = await userModel.hashPassword(password);
-
-    const newUser = new userModel({
-      email,
-      password: hashedPassword,
-    });
-
-    await newUser.save();
-
-    const token = await newUser.generateAuthToken();
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.redirect(`/products`);
   })
 );
 
@@ -79,6 +85,7 @@ router.post(
     const { email, password } = req.body;
 
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       const errorMessages = errors
         .array()
@@ -90,31 +97,43 @@ router.post(
     const user = await userModel.findOne({ email }).select("+password");
 
     if (!user) {
-      throw new ExpressError(
-        400,
-        "Something went wrong, Please try again later"
-      );
+      throw new ExpressError(400, "Invalid email or password");
     }
 
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
-      throw new ExpressError(
-        400,
-        "Something went wrong, Please try again later"
-      );
+      throw new ExpressError(400, "Invalid email or password");
     }
 
-    const token = await user.generateAuthToken();
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.redirect("/products");
   })
 );
+
+module.exports = router;
+
+router.get("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  res.redirect("/products");
+});
+
+router.get("/cart", authenticate, (req, res) => {
+  res.send("login");
+});
 
 module.exports = router;

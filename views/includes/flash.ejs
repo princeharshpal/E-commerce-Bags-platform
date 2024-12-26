@@ -1,0 +1,15 @@
+<% if(success && success.length) { %>
+    <div class="w-full flex justify-center items-center">
+        <div class="flash-parent w-fit rounded-md bg-green-200 px-5 py-4 my-2 text-lg">
+            <%= success %>
+        </div>
+    </div>
+    <% } %>
+
+        <% if(error && error.length) { %>
+            <div class="w-full flex justify-center items-center">
+                <div class="flash-parent w-fit rounded-md bg-red-200 px-5 py-4 my-2 text-lg">
+                    <%= error %>
+                </div>
+            </div>
+            <% } %>
